@@ -27,19 +27,24 @@
   body {
     margin: 0; min-height: 100vh; color: var(--text);
     font-family: Inter, system-ui, sans-serif;
+    background: var(--bg);
+  }
+
+  /* ---------- cenário de fundo (fica atrás de tudo) ---------- */
+  /* camada fixa com o degradê do fundo: o celular só move a página por cima, sem redesenhar o fundo
+     (antes era background-attachment: fixed no body, que redesenhava tudo a cada rolagem) */
+  .ceu {
+    position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
     background:
       linear-gradient(#ffffff06 1px, transparent 1px) 0 0 / 40px 40px,
       linear-gradient(90deg, #ffffff06 1px, transparent 1px) 0 0 / 40px 40px,
       radial-gradient(ellipse at 50% -10%, #3a1a55 0%, transparent 60%),
-      radial-gradient(ellipse at 100% 100%, #3a1a0a 0%, transparent 50%),
-      var(--bg);
-    background-attachment: fixed;
+      radial-gradient(ellipse at 100% 100%, #3a1a0a 0%, transparent 50%);
   }
-
-  /* ---------- cenário de fundo (fica atrás de tudo) ---------- */
-  .ceu { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  /* lua e teias ficam no topo da PÁGINA (rolam junto e somem ao descer), não presas na tela */
+  .topo-deco { position: absolute; top: 0; left: 0; right: 0; height: 0; z-index: 1; pointer-events: none; }
   .lua {
-    position: absolute; top: 6vh; right: 7vw; width: clamp(90px, 14vw, 170px); aspect-ratio: 1; border-radius: 50%;
+    position: absolute; top: 40px; right: 7vw; width: clamp(90px, 14vw, 170px); aspect-ratio: 1; border-radius: 50%;
     background: radial-gradient(circle at 38% 36%, #fff8dc, #ffe9a8 45%, #e8c46a 100%);
     box-shadow: 0 0 60px #ffe9a866, 0 0 140px #ffb34733;
     opacity: .55;
@@ -50,9 +55,9 @@
   .lua::before { width: 18%; height: 18%; top: 30%; left: 55%; }
   .lua::after { width: 11%; height: 11%; top: 62%; left: 32%; }
 
-  .voador { position: absolute; left: 0; animation: voa linear infinite; }
+  .voador { position: absolute; left: 0; animation: voa linear infinite; will-change: transform; }
   .voador.volta { animation-name: voaVolta; }
-  .voador > * { display: block; animation: balanca 2.6s ease-in-out infinite; }
+  .voador > * { display: block; animation: balanca 2.6s ease-in-out infinite; will-change: transform; }
   .bat { font-size: 22px; opacity: .35; }
   .bruxa { width: 92px; opacity: .55; filter: drop-shadow(0 0 8px #8b3dff88); }
   .volta .bruxa { transform: scaleX(-1); }
@@ -88,7 +93,7 @@
     position: absolute; left: -10%; right: -10%; bottom: 0; height: 22vh;
     background: radial-gradient(ellipse at 30% 100%, #8b3dff22, transparent 60%),
                 radial-gradient(ellipse at 75% 100%, #ff7a1a18, transparent 60%);
-    animation: nevoa 14s ease-in-out infinite alternate;
+    animation: nevoa 14s ease-in-out infinite alternate; will-change: transform;
   }
   @keyframes nevoa { to { transform: translateX(6%); } }
 
@@ -128,7 +133,7 @@
   /* a duração é calculada no JS pelo tamanho do texto, para a velocidade ficar constante */
   .trilho {
     display: flex; width: max-content; white-space: nowrap;
-    animation: correr 120s linear infinite;
+    animation: correr 120s linear infinite; will-change: transform;
   }
   .trilho span {
     font: 400 26px/1 "Bebas Neue", Impact, sans-serif; letter-spacing: 1.5px;
@@ -139,7 +144,7 @@
   /* ---------- rolos de filme nos cantos do letreiro ---------- */
   .rolo {
     position: absolute; width: clamp(48px, 8vw, 84px); aspect-ratio: 1; z-index: 1;
-    animation: girar 14s linear infinite; filter: drop-shadow(0 4px 10px #000c);
+    animation: girar 14s linear infinite; filter: drop-shadow(0 4px 10px #000c); will-change: transform;
   }
   .rolo.esq { left: clamp(-34px, -4vw, -20px); top: clamp(-30px, -3.5vw, -18px); }
   .rolo.dir { right: clamp(-34px, -4vw, -20px); bottom: clamp(-30px, -3.5vw, -18px); animation-direction: reverse; }
@@ -340,8 +345,8 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ---------- sorteio: holofote laranja no cartaz da vez, os outros apagam ---------- */
-  #grid.sorteando .poster { transition: opacity .25s, filter .25s, box-shadow .35s; }
-  #grid.sorteando .poster:not(.spin):not(.sorteado) { opacity: .35; filter: grayscale(.7) brightness(.55); }
+  #grid.sorteando .poster { transition: opacity .25s, box-shadow .35s; }
+  #grid.sorteando .poster:not(.spin):not(.sorteado) { opacity: .3; }
   /* acende na hora; ao sair, apaga devagar (deixa um rastro de luz) */
   #grid.sorteando .poster.spin { transition: none; }
   .spin {
@@ -350,12 +355,11 @@
   }
   .sorteado {
     z-index: 2; animation: holofote .5s ease-in-out infinite alternate;
+    box-shadow: 0 0 0 4px var(--orange2), 0 0 50px 16px #ff9a3acc, 0 0 130px 50px #ff7a1a77 !important;
   }
   @keyframes shake { 0%,100% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) scale(1.04) } }
-  @keyframes holofote {
-    from { transform: scale(1.04); box-shadow: 0 0 0 3px var(--orange), 0 0 40px 12px #ff7a1acc, 0 0 110px 40px #ff7a1a66; }
-    to { transform: scale(1.09); box-shadow: 0 0 0 4px var(--orange2), 0 0 60px 20px #ff9a3acc, 0 0 160px 60px #ff7a1a88; }
-  }
+  /* pulsa só no tamanho (barato); o brilho fica fixo */
+  @keyframes holofote { from { transform: scale(1.04); } to { transform: scale(1.09); } }
 
   /* ---------- revoada de morcegos saindo do modal do filme sorteado ---------- */
   .revoada { position: fixed; left: 50%; top: 50%; width: 0; height: 0; z-index: 0; pointer-events: none; }
@@ -379,15 +383,16 @@
   .contato a { color: var(--orange2); font-weight: 600; text-decoration: none; }
   .contato a:hover, .contato a:focus-visible { color: var(--orange); text-decoration: underline; }
   .aboboras { display: flex; justify-content: center; gap: clamp(14px, 4vw, 40px); font-size: clamp(30px, 6vw, 46px); margin-bottom: 8px; }
-  .aboboras span { animation: vela 2.2s ease-in-out infinite; }
+  /* brilho fixo (text-shadow) e a "chama" anima só escala/opacidade: filtro animado pesava no celular */
+  .aboboras span { display: inline-block; text-shadow: 0 0 14px #ff7a1a; animation: vela 2.2s ease-in-out infinite; will-change: transform, opacity; }
   .aboboras span:nth-child(2) { animation-delay: .4s; font-size: .75em; align-self: flex-end; }
   .aboboras span:nth-child(3) { animation-delay: .9s; }
   .aboboras span:nth-child(4) { animation-delay: 1.3s; font-size: .8em; align-self: flex-end; }
   .aboboras span:nth-child(5) { animation-delay: .2s; }
   @keyframes vela {
-    0%, 100% { filter: drop-shadow(0 0 6px #ff7a1a88); }
-    40% { filter: drop-shadow(0 0 18px #ff7a1a); }
-    60% { filter: drop-shadow(0 0 10px #ffb347aa); }
+    0%, 100% { opacity: .8; transform: scale(1); }
+    40% { opacity: 1; transform: scale(1.06); }
+    60% { opacity: .9; transform: scale(1.02); }
   }
 
   @media (max-width: 900px) {
@@ -748,10 +753,13 @@
   </symbol>
 </svg>
 
-<div class="ceu" id="ceu" aria-hidden="true">
+<div class="topo-deco" aria-hidden="true">
   <div class="lua"></div>
   <svg class="teia esq"><use href="#teia"/></svg>
   <svg class="teia dir"><use href="#teia"/></svg>
+</div>
+
+<div class="ceu" id="ceu" aria-hidden="true">
   <div class="aranha"><span>🕷️</span></div>
   <div class="nevoa"></div>
 </div>
@@ -1401,13 +1409,16 @@ $("#btnSortear").addEventListener("click", () => {
     cards.forEach((c) => c.classList.remove("spin"));
     const c = cards[n % cards.length];
     c.classList.add("spin");
-    c.scrollIntoView({ block: "nearest", behavior: "smooth" });
     n++;
     const t = (performance.now() - inicio) / DURACAO;
+    // na fase rápida não rola (a tela ficava pulando); na lenta, só se o cartaz estiver fora da tela
+    const r = c.getBoundingClientRect();
+    if (t > 0.55 && (r.top < 0 || r.bottom > innerHeight)) c.scrollIntoView({ block: "center", behavior: "smooth" });
     // começa rápido (~90 ms por cartaz) e vai freando até ~650 ms
     if (t < 1) { setTimeout(tick, 90 + 560 * t * t); return; }
     // parou: o escolhido pulsa no holofote e depois abre com a revoada
     setTimeout(() => {
+      c.scrollIntoView({ block: "center", behavior: "smooth" });
       c.classList.replace("spin", "sorteado");
       setTimeout(() => {
         c.classList.remove("sorteado");
@@ -1455,14 +1466,15 @@ function voador(html, { top, dur, volta }) {
   v.firstElementChild.style.animationDelay = -Math.random() * 3 + "s";
   $("#ceu").appendChild(v);
 }
-for (let i = 0; i < 7; i++) {
+const telaPequena = innerWidth < 620; // celular: menos coisas animando ao mesmo tempo
+for (let i = 0; i < (telaPequena ? 4 : 7); i++) {
   voador(`<span class="bat">🦇</span>`, { top: 5 + Math.random() * 80, dur: 18 + Math.random() * 22, volta: i % 3 === 0 });
 }
-for (let i = 0; i < 3; i++) {
+for (let i = 0; i < (telaPequena ? 2 : 3); i++) {
   voador(`<svg class="bruxa" viewBox="0 0 120 80"><use href="#bruxa"/></svg>`,
     { top: 10 + i * 25 + Math.random() * 10, dur: 26 + Math.random() * 18, volta: i === 1 });
 }
-for (let i = 0; i < 4; i++) {
+for (let i = 0; i < (telaPequena ? 2 : 4); i++) {
   const g = document.createElement("span");
   g.className = "fantasma";
   g.textContent = "👻";
