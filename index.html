@@ -345,17 +345,16 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   /* ---------- sorteio: holofote laranja no cartaz da vez, os outros apagam ---------- */
-  #grid.sorteando .poster { transition: opacity .25s, box-shadow .35s; }
+  /* só a opacidade tem transição; a sombra liga/desliga na hora (sombra grande animada pesava no celular) */
+  #grid.sorteando .poster { transition: opacity .25s; }
   #grid.sorteando .poster:not(.spin):not(.sorteado) { opacity: .3; }
-  /* acende na hora; ao sair, apaga devagar (deixa um rastro de luz) */
-  #grid.sorteando .poster.spin { transition: none; }
   .spin {
     animation: shake .12s linear infinite; z-index: 2;
-    box-shadow: 0 0 0 3px var(--orange), 0 0 40px 12px #ff7a1acc, 0 0 110px 40px #ff7a1a66 !important;
+    box-shadow: 0 0 0 3px var(--orange), 0 0 26px 8px #ff7a1acc !important;
   }
   .sorteado {
     z-index: 2; animation: holofote .5s ease-in-out infinite alternate;
-    box-shadow: 0 0 0 4px var(--orange2), 0 0 50px 16px #ff9a3acc, 0 0 130px 50px #ff7a1a77 !important;
+    box-shadow: 0 0 0 4px var(--orange2), 0 0 34px 12px #ff9a3acc !important;
   }
   @keyframes shake { 0%,100% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) scale(1.04) } }
   /* pulsa só no tamanho (barato); o brilho fica fixo */
@@ -1411,9 +1410,14 @@ $("#btnSortear").addEventListener("click", () => {
     c.classList.add("spin");
     n++;
     const t = (performance.now() - inicio) / DURACAO;
-    // na fase rápida não rola (a tela ficava pulando); na lenta, só se o cartaz estiver fora da tela
-    const r = c.getBoundingClientRect();
-    if (t > 0.55 && (r.top < 0 || r.bottom > innerHeight)) c.scrollIntoView({ block: "center", behavior: "smooth" });
+    if (!telaPequena) {
+      // PC: a tela acompanha cada cartaz (como antes)
+      c.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } else {
+      // celular: na fase rápida não rola (a tela ficava pulando); na lenta, só se o cartaz estiver fora da tela
+      const r = c.getBoundingClientRect();
+      if (t > 0.55 && (r.top < 0 || r.bottom > innerHeight)) c.scrollIntoView({ block: "center", behavior: "smooth" });
+    }
     // começa rápido (~90 ms por cartaz) e vai freando até ~650 ms
     if (t < 1) { setTimeout(tick, 90 + 560 * t * t); return; }
     // parou: o escolhido pulsa no holofote e depois abre com a revoada
