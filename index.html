@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cine Halloween</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Creepster&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0b0710;
+    --bg2: #160d1f;
+    --card: #1c1226;
+    --text: #f3e9ff;
+    --muted: #a995bd;
+    --orange: #ff7a1a;
+    --orange2: #ffb347;
+    --purple: #8b3dff;
+    --green: #6dff8a;
+    --line: #2e2140;
+  }
+  * { box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
+  body {
+    margin: 0; min-height: 100vh; color: var(--text);
+    font-family: Inter, system-ui, sans-serif;
+    background:
+      linear-gradient(#ffffff06 1px, transparent 1px) 0 0 / 40px 40px,
+      linear-gradient(90deg, #ffffff06 1px, transparent 1px) 0 0 / 40px 40px,
+      radial-gradient(ellipse at 50% -10%, #3a1a55 0%, transparent 60%),
+      radial-gradient(ellipse at 100% 100%, #3a1a0a 0%, transparent 50%),
+      var(--bg);
+    background-attachment: fixed;
+  }
+
+  /* ---------- cenário de fundo (fica atrás de tudo) ---------- */
+  .ceu { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+  .lua {
+    position: absolute; top: 6vh; right: 7vw; width: clamp(90px, 14vw, 170px); aspect-ratio: 1; border-radius: 50%;
+    background: radial-gradient(circle at 38% 36%, #fff8dc, #ffe9a8 45%, #e8c46a 100%);
+    box-shadow: 0 0 60px #ffe9a866, 0 0 140px #ffb34733;
+    opacity: .55;
+  }
+  .lua::before, .lua::after { /* crateras */
+    content: ""; position: absolute; border-radius: 50%; background: #d9b25a66;
+  }
+  .lua::before { width: 18%; height: 18%; top: 30%; left: 55%; }
+  .lua::after { width: 11%; height: 11%; top: 62%; left: 32%; }
+
+  .voador { position: absolute; left: 0; animation: voa linear infinite; }
+  .voador.volta { animation-name: voaVolta; }
+  .voador > * { display: block; animation: balanca 2.6s ease-in-out infinite; }
+  .bat { font-size: 22px; opacity: .35; }
+  .bruxa { width: 92px; opacity: .55; filter: drop-shadow(0 0 8px #8b3dff88); }
+  .volta .bruxa { transform: scaleX(-1); }
+  @keyframes voa {
+    from { transform: translateX(-15vw); }
+    to   { transform: translateX(115vw); }
+  }
+  @keyframes voaVolta {
+    from { transform: translateX(115vw); }
+    to   { transform: translateX(-15vw); }
+  }
+  @keyframes balanca { 50% { translate: 0 -18px; rotate: 4deg; } }
+
+  .teia { position: absolute; width: clamp(110px, 16vw, 200px); opacity: .22; }
+  .teia.esq { top: 0; left: 0; }
+  .teia.dir { top: 0; right: 0; transform: scaleX(-1); }
+
+  .aranha { position: absolute; top: 0; left: 18%; display: flex; flex-direction: column; align-items: center; animation: desce 7s ease-in-out infinite; }
+  .aranha::before { content: ""; width: 1px; height: 26vh; background: #ffffff40; }
+  .aranha span { font-size: 22px; opacity: .6; margin-top: -2px; }
+  @keyframes desce { 0%, 100% { transform: translateY(-14vh); } 50% { transform: translateY(0); } }
+
+  .fantasma { position: absolute; bottom: -60px; font-size: 34px; opacity: 0; animation: sobe linear infinite; }
+  @keyframes sobe {
+    0%   { transform: translate(0, 0); opacity: 0; }
+    15%  { opacity: .22; }
+    50%  { transform: translate(30px, -55vh); }
+    85%  { opacity: .18; }
+    100% { transform: translate(-20px, -110vh); opacity: 0; }
+  }
+
+  .nevoa {
+    position: absolute; left: -10%; right: -10%; bottom: 0; height: 22vh;
+    background: radial-gradient(ellipse at 30% 100%, #8b3dff22, transparent 60%),
+                radial-gradient(ellipse at 75% 100%, #ff7a1a18, transparent 60%);
+    animation: nevoa 14s ease-in-out infinite alternate;
+  }
+  @keyframes nevoa { to { transform: translateX(6%); } }
+
+  header { position: relative; z-index: 1; text-align: center; padding: 40px 16px 8px; }
+  .marquee {
+    display: inline-block; padding: 14px 36px; border-radius: 14px;
+    border: 3px solid var(--orange);
+    box-shadow: 0 0 24px #ff7a1a88, inset 0 0 24px #ff7a1a44;
+    background: #120a18;
+    position: relative;
+  }
+  .marquee::before, .marquee::after {
+    content: ""; position: absolute; left: 10px; right: 10px; height: 6px;
+    background: radial-gradient(circle, var(--orange2) 2px, transparent 3px) 0 0 / 18px 6px repeat-x;
+    animation: blink 1.2s steps(2) infinite;
+  }
+  .marquee::before { top: -12px; } .marquee::after { bottom: -12px; animation-delay: .6s; }
+  @keyframes blink { 50% { opacity: .3; } }
+  h1 {
+    font-family: Creepster, cursive; font-weight: 400; margin: 0;
+    font-size: clamp(42px, 9vw, 86px); letter-spacing: 3px;
+    color: var(--orange); text-shadow: 0 0 18px #ff7a1a, 0 4px 0 #5a2200;
+  }
+
+  /* ---------- fitas correndo (mesma técnica do quinze-anos-4) ----------
+     O trilho tem a largura do próprio conteúdo (max-content) e o texto vem
+     repetido um número PAR de vezes: andar -50% cai exatamente no início da
+     segunda metade, então o loop emenda sem salto. */
+  .tapes { position: relative; z-index: 2; height: 120px; margin: 14px 0 6px; }
+  .tape {
+    position: absolute; left: -40px; right: -40px; top: 34px;
+    overflow: hidden; padding: 9px 0; box-shadow: 0 8px 24px #000a;
+  }
+  .tape.a { background: var(--orange); color: #1a0b00; transform: rotate(-3deg); z-index: 2; }
+  .tape.b { background: var(--purple); color: #fff; transform: rotate(2.5deg); top: 44px; opacity: .92; }
+  .trilho {
+    display: flex; width: max-content; white-space: nowrap;
+    animation: correr 22s linear infinite;
+  }
+  .tape.b .trilho { animation-duration: 30s; animation-direction: reverse; }
+  .trilho span {
+    font: 400 26px/1 "Bebas Neue", Impact, sans-serif; letter-spacing: 1.5px;
+    padding: 0 14px;
+  }
+  @keyframes correr { to { transform: translateX(-50%); } }
+
+  /* ---------- navegação entre telas ---------- */
+  nav { position: relative; z-index: 3; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; padding: 8px 16px; }
+  nav a {
+    font: 400 24px/1 "Bebas Neue", sans-serif; letter-spacing: 1.5px; text-decoration: none;
+    color: var(--muted); padding: 10px 22px; border-radius: 999px; border: 2px solid var(--line);
+    background: #0b071099;
+  }
+  nav a.on { color: #1a0b00; background: var(--orange); border-color: var(--orange); box-shadow: 0 0 20px #ff7a1a66; }
+  nav a .n { font: 800 12px Inter; background: #0004; border-radius: 999px; padding: 2px 7px; margin-left: 4px; vertical-align: 3px; }
+
+  .screen { display: none; position: relative; z-index: 1; }
+  .screen.on { display: block; }
+
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; padding: 14px 16px 4px; }
+  .btn {
+    border: 0; cursor: pointer; font: 600 14px Inter, sans-serif;
+    padding: 11px 18px; border-radius: 999px; color: #1a0b00;
+    background: linear-gradient(180deg, var(--orange2), var(--orange));
+    box-shadow: 0 4px 0 #8a3a00; transition: transform .1s, filter .2s;
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+  }
+  .btn:hover { filter: brightness(1.1); }
+  .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #8a3a00; }
+  .btn.ghost { background: transparent; color: var(--text); border: 2px solid var(--line); box-shadow: none; }
+  .btn.ghost:hover { border-color: var(--purple); }
+  .btn.purple { background: linear-gradient(180deg, #a768ff, var(--purple)); color: #fff; box-shadow: 0 4px 0 #3f1180; }
+  .btn.green { background: linear-gradient(180deg, #9dffb0, #3fd962); box-shadow: 0 4px 0 #1b7a32; }
+  .btn.sm { padding: 7px 12px; font-size: 13px; }
+
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; }
+  .chip {
+    border: 1px solid var(--line); background: var(--bg2); color: var(--muted);
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; font: 600 13px Inter;
+  }
+  .chip.on { color: #1a0b00; background: var(--orange2); border-color: var(--orange2); }
+
+  /* ---------- tela: em cartaz ---------- */
+  .grid {
+    max-width: 1200px; margin: 0 auto; padding: 24px 16px 40px;
+    display: grid; gap: 26px; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  }
+  .poster {
+    position: relative; aspect-ratio: 2 / 3; border-radius: 10px; overflow: hidden;
+    cursor: pointer; background: var(--card);
+    box-shadow: 0 10px 30px #000a, 0 0 0 1px var(--line);
+    transition: transform .25s, box-shadow .25s;
+  }
+  .poster:hover, .poster:focus-visible {
+    transform: translateY(-6px) rotate(-1deg) scale(1.03);
+    box-shadow: 0 18px 40px #000c, 0 0 0 2px var(--orange), 0 0 30px #ff7a1a66;
+    outline: none;
+  }
+  .poster img, .mini img, .m-poster img, .preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .art {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: space-between; padding: 18px 12px 16px; text-align: center;
+  }
+  .art .emoji { font-size: 64px; margin-top: 18%; filter: drop-shadow(0 6px 12px #000); }
+  .art .t { font-family: Creepster, cursive; font-size: 26px; line-height: 1.05; letter-spacing: 1px; text-shadow: 0 3px 0 #0008; }
+  .art .y { font-size: 12px; letter-spacing: 3px; opacity: .8; margin-top: 6px; }
+  .badge {
+    position: absolute; top: 8px; left: 8px; font: 800 10px Inter; letter-spacing: 1px;
+    padding: 4px 8px; border-radius: 4px; background: #000b; color: var(--orange2); text-transform: uppercase;
+  }
+  .badge.local { left: auto; right: 8px; color: var(--green); }
+  .poster .label {
+    position: absolute; left: 0; right: 0; bottom: 0; padding: 30px 10px 10px;
+    background: linear-gradient(transparent, #000e); font-weight: 600; font-size: 14px;
+  }
+  .empty { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 60px 16px; }
+  .empty .big { font-size: 64px; display: block; margin-bottom: 8px; }
+
+  /* cartão "adicionar mais" no fim do cartaz */
+  .poster.add {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    background: transparent; border: 3px dashed var(--line); box-shadow: none; color: var(--muted);
+    text-decoration: none; font: 400 26px/1 "Bebas Neue", sans-serif; letter-spacing: 1.5px;
+  }
+  .poster.add .mais { font-size: 54px; }
+  .poster.add:hover, .poster.add:focus-visible { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 30px #ff7a1a33; }
+
+  /* ---------- tela: adicionar ---------- */
+  .manage {
+    max-width: 1200px; margin: 0 auto; padding: 20px 16px 40px;
+    display: grid; grid-template-columns: 400px 1fr; gap: 24px; align-items: start;
+  }
+  .panel { background: var(--bg2); border: 1px solid var(--line); border-radius: 16px; }
+  .panel h2 {
+    font: 400 30px/1 "Bebas Neue", sans-serif; letter-spacing: 1.5px; color: var(--orange); margin: 0;
+  }
+  form { padding: 20px; display: grid; gap: 12px; position: sticky; top: 16px; }
+  label { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+  input, textarea, select {
+    font: 14px Inter; color: var(--text); background: var(--bg); border: 1px solid var(--line);
+    border-radius: 8px; padding: 10px; width: 100%;
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--purple); border-color: transparent; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hint { font-size: 12px; color: var(--muted); margin: -4px 0 0; }
+  .check { display: flex; align-items: center; gap: 8px; color: var(--text); font-size: 14px; }
+  .check input { width: 18px; height: 18px; accent-color: var(--orange); }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  /* campo da capa: prévia + botões */
+  .capa-box { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; }
+  .preview {
+    position: relative; width: 96px; aspect-ratio: 2/3; border-radius: 8px; overflow: hidden;
+    border: 2px dashed var(--line); background: var(--bg); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 28px;
+  }
+  .preview.drag { border-color: var(--orange); }
+  .capa-box .actions { flex-direction: column; align-items: flex-start; gap: 8px; }
+
+  .catalog { padding: 20px; }
+  .catalog-head { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .catalog-head p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+  .items { display: grid; gap: 10px; }
+  .item {
+    display: grid; grid-template-columns: 54px 1fr auto; gap: 12px; align-items: center;
+    padding: 8px; border-radius: 12px; background: var(--bg); border: 1px solid var(--line);
+    transition: border-color .2s;
+  }
+  .item.chosen { border-color: var(--orange); background: linear-gradient(90deg, #ff7a1a1c, var(--bg) 60%); }
+  .mini { position: relative; width: 54px; aspect-ratio: 2/3; border-radius: 6px; overflow: hidden; }
+  .mini .art { padding: 4px; justify-content: center; }
+  .mini .art .emoji { font-size: 24px; margin: 0; }
+  .mini .art > div:last-child { display: none; }
+  .item .name { font-weight: 700; }
+  .item .sub2 { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .item .btns { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
+  .pick {
+    border: 2px solid var(--line); background: transparent; color: var(--muted); cursor: pointer;
+    font: 600 13px Inter; padding: 7px 12px; border-radius: 999px; white-space: nowrap;
+  }
+  .pick.on { background: var(--orange); border-color: var(--orange); color: #1a0b00; }
+  .icon { border: 0; background: transparent; color: var(--muted); cursor: pointer; font-size: 16px; padding: 6px; border-radius: 8px; }
+  .icon:hover { background: var(--line); color: var(--text); }
+  .icon.armado { background: #ff3d5a; color: #fff; font: 700 12px Inter; padding: 7px 10px; }
+
+  /* ---------- modal de detalhes ---------- */
+  dialog {
+    border: 0; padding: 0; border-radius: 16px; width: min(760px, calc(100vw - 32px));
+    background: var(--bg2); color: var(--text); box-shadow: 0 0 0 1px var(--line), 0 30px 80px #000;
+  }
+  dialog::backdrop { background: #000c; backdrop-filter: blur(4px); }
+  .m-wrap { display: grid; grid-template-columns: 240px 1fr; }
+  .m-poster { position: relative; aspect-ratio: 2/3; }
+  .m-body { padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+  .m-body h2 { font-family: Creepster, cursive; font-weight: 400; font-size: 38px; margin: 0; color: var(--orange); }
+  .meta { color: var(--muted); font-size: 13px; }
+  .syn { line-height: 1.55; margin: 0; }
+  .m-body .actions { margin-top: auto; padding-top: 8px; }
+  .where { font-size: 13px; background: #0006; border: 1px dashed var(--line); padding: 10px 12px; border-radius: 10px; }
+  .where b { color: var(--orange2); }
+  .x {
+    position: absolute; top: 10px; right: 12px; background: #0008; color: #fff; border: 0;
+    width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 18px; z-index: 2;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(120px);
+    background: var(--orange); color: #1a0b00; font-weight: 700; padding: 12px 20px; border-radius: 999px;
+    transition: transform .3s; z-index: 50; max-width: calc(100vw - 32px); text-align: center;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  .spin { animation: shake .12s linear infinite; }
+  @keyframes shake { 0%,100% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) scale(1.04) } }
+
+  /* ---------- rodapé com abóboras ---------- */
+  footer { position: relative; z-index: 1; text-align: center; padding: 10px 16px 40px; color: var(--muted); font-size: 13px; }
+  .aboboras { display: flex; justify-content: center; gap: clamp(14px, 4vw, 40px); font-size: clamp(30px, 6vw, 46px); margin-bottom: 8px; }
+  .aboboras span { animation: vela 2.2s ease-in-out infinite; }
+  .aboboras span:nth-child(2) { animation-delay: .4s; font-size: .75em; align-self: flex-end; }
+  .aboboras span:nth-child(3) { animation-delay: .9s; }
+  .aboboras span:nth-child(4) { animation-delay: 1.3s; font-size: .8em; align-self: flex-end; }
+  .aboboras span:nth-child(5) { animation-delay: .2s; }
+  @keyframes vela {
+    0%, 100% { filter: drop-shadow(0 0 6px #ff7a1a88); }
+    40% { filter: drop-shadow(0 0 18px #ff7a1a); }
+    60% { filter: drop-shadow(0 0 10px #ffb347aa); }
+  }
+
+  @media (max-width: 900px) {
+    .manage { grid-template-columns: 1fr; }
+    form { position: static; }
+  }
+  @media (max-width: 620px) {
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .m-wrap { grid-template-columns: 1fr; }
+    .m-poster { aspect-ratio: 16/10; }
+    .art .emoji { font-size: 44px; margin-top: 10%; }
+    .art .t { font-size: 20px; }
+    .row { grid-template-columns: 1fr; }
+    .item { grid-template-columns: 44px 1fr; }
+    .mini { width: 44px; }
+    .item .btns { grid-column: 1 / -1; justify-content: flex-start; }
+    .tapes { height: 96px; }
+    .trilho span { font-size: 21px; }
+    .bruxa { width: 70px; }
+    .poster.add { font-size: 21px; }
+  }
+  /* Sem bloco prefers-reduced-motion de propósito: o Windows ativa essa preferência
+     quando os "efeitos de animação" estão desligados, e aí as fitas paravam. */
+</style>
+</head>
+<body>
+
+<!-- silhueta da bruxa na vassoura (reaproveitada pelos <use>) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="bruxa" viewBox="0 0 120 80">
+    <g fill="#c9a6ff">
+      <!-- vassoura -->
+      <rect x="4" y="52" width="86" height="3.5" rx="1.75" transform="rotate(-6 47 54)"/>
+      <path d="M88 47 L118 38 L116 50 L119 60 L90 57 Z"/>
+      <!-- capa ao vento -->
+      <path d="M44 30 C30 34 20 44 12 40 C20 50 34 50 46 44 Z"/>
+      <!-- corpo / vestido -->
+      <path d="M44 28 L62 26 L70 52 L40 54 Z"/>
+      <!-- perna e bota -->
+      <path d="M58 50 L66 64 L74 64 L74 68 L62 68 L52 52 Z"/>
+      <!-- cabeça -->
+      <circle cx="54" cy="21" r="7"/>
+      <!-- chapéu -->
+      <path d="M40 17 L68 13 L66 16 L42 20 Z"/>
+      <path d="M46 16 L62 14 L50 -2 L44 6 Z"/>
+      <!-- braço segurando a vassoura -->
+      <path d="M60 32 L74 46 L70 49 L56 36 Z"/>
+    </g>
+  </symbol>
+  <symbol id="teia" viewBox="0 0 100 100">
+    <g fill="none" stroke="#fff" stroke-width=".8">
+      <path d="M0 0 L100 0 M0 0 L100 40 M0 0 L80 80 M0 0 L40 100 M0 0 L0 100"/>
+      <path d="M20 0 Q18 6 20 8 Q16 12 14 18 Q10 18 8 20 Q4 18 0 20"/>
+      <path d="M42 0 Q38 10 40 16 Q34 24 30 32 Q22 34 16 38 Q8 36 0 42"/>
+      <path d="M66 0 Q60 14 62 25 Q54 38 48 48 Q36 52 26 58 Q12 56 0 64"/>
+      <path d="M92 0 Q84 20 86 34 Q76 52 68 66 Q50 72 36 80 Q16 80 0 88"/>
+    </g>
+  </symbol>
+</svg>
+
+<div class="ceu" id="ceu" aria-hidden="true">
+  <div class="lua"></div>
+  <svg class="teia esq"><use href="#teia"/></svg>
+  <svg class="teia dir"><use href="#teia"/></svg>
+  <div class="aranha"><span>🕷️</span></div>
+  <div class="nevoa"></div>
+</div>
+
+<header>
+  <div class="marquee"><h1>Cine Halloween</h1></div>
+</header>
+
+<div class="tapes" aria-hidden="true">
+  <div class="tape b"><div class="trilho" id="trackB"></div></div>
+  <div class="tape a"><div class="trilho" id="trackA"></div></div>
+</div>
+
+<nav>
+  <a href="#cartaz" data-screen="cartaz">🎬 Em cartaz <span class="n" id="countChosen">0</span></a>
+  <a href="#adicionar" data-screen="adicionar">➕ Adicionar filmes</a>
+</nav>
+
+<!-- TELA 1: só os filmes escolhidos (abre nela) -->
+<section class="screen" id="cartaz">
+  <div class="toolbar">
+    <button class="btn" id="btnSortear">🎲 Sortear o filme da noite</button>
+    <a class="btn purple" href="#adicionar">➕ Adicionar mais</a>
+  </div>
+  <div class="toolbar"><div class="filters" id="filters"></div></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- TELA 2: adicionar e escolher -->
+<section class="screen" id="adicionar">
+  <div class="manage">
+    <form id="form" class="panel">
+      <h2 id="formTitle">Novo filme</h2>
+
+      <label>Capa do filme</label>
+      <div class="capa-box">
+        <div class="preview" id="preview" title="Clique ou arraste uma imagem aqui">🖼️</div>
+        <div class="actions">
+          <label class="btn sm" style="display:inline-flex">📷 Escolher imagem
+            <input type="file" id="capaFile" accept="image/*" hidden>
+          </label>
+          <button class="btn ghost sm" type="button" id="capaRemover" hidden>✕ Tirar capa</button>
+          <p class="hint" style="margin:0">JPG ou PNG. Pode arrastar a imagem para o quadro.</p>
+        </div>
+      </div>
+
+      <div class="row">
+        <label>Título *<input name="titulo" required maxlength="120"></label>
+        <label>Ano<input name="ano" inputmode="numeric" maxlength="4"></label>
+      </div>
+      <div class="row">
+        <label>Categoria
+          <select name="genero">
+            <option>Terror</option><option>Família</option><option>Comédia</option><option>Suspense</option><option>Animação</option>
+          </select>
+        </label>
+        <label>Emoji (se não tiver capa)<input name="emoji" placeholder="🎃" maxlength="8"></label>
+      </div>
+      <label>Sinopse<textarea name="sinopse" rows="3" maxlength="600"></textarea></label>
+      <label>Arquivo do filme no PC<input name="arquivo" placeholder="C:\Filmes\Halloween\Halloween.mp4"></label>
+      <p class="hint">Dica: no Explorador, botão direito no arquivo → “Copiar como caminho” e cole aqui.</p>
+      <label>Pasta do filme no PC<input name="pasta" placeholder="C:\Filmes\Halloween"></label>
+      <div class="row">
+        <label>Streaming<input name="streaming" placeholder="Netflix, Prime..."></label>
+        <label>Link do streaming<input name="link" type="url" placeholder="https://..."></label>
+      </div>
+      <label class="check"><input type="checkbox" name="escolhido" checked> Colocar em cartaz</label>
+      <div class="actions">
+        <button class="btn">💾 Salvar filme</button>
+        <button class="btn ghost" type="button" id="btnCancel" hidden>Cancelar</button>
+      </div>
+    </form>
+
+    <div class="panel catalog">
+      <div class="catalog-head">
+        <div>
+          <h2>Todos os filmes</h2>
+          <p>“Escolher” manda o filme para o cartaz. 📷 troca a capa direto.</p>
+        </div>
+        <div class="actions">
+          <button class="btn ghost sm" id="btnExport">💾 Exportar</button>
+          <label class="btn ghost sm" style="display:inline-flex">📂 Importar<input type="file" id="fileImport" accept=".json" hidden></label>
+        </div>
+      </div>
+      <div class="items" id="items"></div>
+      <input type="file" id="capaRapida" accept="image/*" hidden>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="aboboras" aria-hidden="true"><span>🎃</span><span>🎃</span><span>💀</span><span>🎃</span><span>🎃</span></div>
+  Doces ou travessuras? Sessão garantida no seu navegador 🍬
+</footer>
+
+<!-- detalhes do filme -->
+<dialog id="dlg">
+  <button class="x" data-close aria-label="Fechar">✕</button>
+  <div class="m-wrap">
+    <div class="m-poster" id="mPoster"></div>
+    <div class="m-body">
+      <h2 id="mTitle"></h2>
+      <div class="meta" id="mMeta"></div>
+      <p class="syn" id="mSyn"></p>
+      <div class="where" id="mWhere"></div>
+      <div class="actions" id="mActions"></div>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   🎬 LISTA INICIAL DE FILMES
+   Só é usada na primeira vez; depois vale o que estiver salvo no
+   navegador (localStorage). Edite pela tela "Adicionar filmes".
+   ============================================================ */
+const FILMES_PADRAO = [
+  { titulo: "Halloween", ano: 1978, genero: "Terror", emoji: "🔪", escolhido: true,
+    sinopse: "Na noite de Halloween, Michael Myers volta à cidade onde tudo começou." },
+  { titulo: "Abracadabra", ano: 1993, genero: "Família", emoji: "🧙‍♀️", escolhido: true,
+    sinopse: "Três irmãs bruxas são ressuscitadas em Salem numa noite de Halloween." },
+  { titulo: "O Estranho Mundo de Jack", ano: 1993, genero: "Animação", emoji: "🎃", escolhido: true,
+    sinopse: "Jack, o Rei das Abóboras, descobre o Natal e resolve comandá-lo." },
+  { titulo: "Os Fantasmas se Divertem", ano: 1988, genero: "Comédia", emoji: "🪲",
+    sinopse: "Um casal de fantasmas chama um bio-exorcista bem esquisito para espantar os novos moradores." },
+  { titulo: "Invocação do Mal", ano: 2013, genero: "Terror", emoji: "👁️", escolhido: true,
+    sinopse: "Investigadores paranormais ajudam uma família aterrorizada numa casa de fazenda." },
+  { titulo: "Pânico", ano: 1996, genero: "Suspense", emoji: "📞",
+    sinopse: "Um assassino mascarado aterroriza adolescentes que conhecem todas as regras dos filmes de terror." },
+  { titulo: "Coraline", ano: 2009, genero: "Animação", emoji: "🧵",
+    sinopse: "Uma menina encontra uma porta secreta para um mundo perfeito demais." },
+  { titulo: "A Família Addams", ano: 1991, genero: "Comédia", emoji: "🖤",
+    sinopse: "A família mais macabra (e unida) do cinema recebe um suposto tio perdido." },
+  { titulo: "It: A Coisa", ano: 2017, genero: "Terror", emoji: "🎈",
+    sinopse: "Um grupo de crianças enfrenta um palhaço que se alimenta do medo." },
+  { titulo: "Hereditário", ano: 2018, genero: "Terror", emoji: "🕯️",
+    sinopse: "Após a morte da avó, uma família descobre segredos sombrios da sua linhagem." },
+];
+
+// frases das fitas
+const FRASES_A = ["HALLOWEEN", "DOCES OU TRAVESSURAS", "NÃO OLHE PRA TRÁS", "31 DE OUTUBRO", "PEGA A PIPOCA", "QUEM APAGOU A LUZ?"];
+const FRASES_B = ["SESSÃO DA MEIA-NOITE", "SE TIVER CORAGEM", "TEM ALGUÉM ATRÁS DE VOCÊ", "BRUXAS À SOLTA", "A NOITE MAIS ASSUSTADORA DO ANO"];
+
+const PALETAS = [
+  ["#ff7a1a", "#3a0d00"], ["#8b3dff", "#12002a"], ["#6dff8a", "#002410"],
+  ["#ff3d5a", "#2a0008"], ["#ffd23d", "#2a1a00"], ["#3dd6ff", "#001a2a"],
+];
+
+// capa é reduzida antes de salvar, para caber várias no localStorage (~5 MB no total)
+const CAPA_MAX_W = 400, CAPA_MAX_H = 600, CAPA_QUALIDADE = 0.82;
+
+const KEY = "cine-halloween-filmes";
+let filmes = load();
+let filtro = "Todos";
+let editIndex = -1;
+let capaForm = "";      // data URL da capa no formulário
+let capaRapidaIndex = -1;
+
+function load() {
+  try {
+    const s = localStorage.getItem(KEY);
+    if (s) return JSON.parse(s);
+  } catch (e) {}
+  return structuredClone(FILMES_PADRAO);
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify(filmes)); return true; }
+  catch (e) { toast("Espaço do navegador cheio 💀 Exporte a lista ou tire algumas capas."); return false; }
+}
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+
+// só aceita imagem que nós mesmos geramos (data:image) ou http(s)
+const capaSegura = (s) => /^(data:image\/(jpeg|png|webp);base64,|https?:\/\/)/i.test(s || "");
+const linkSeguro = (s) => /^https?:\/\//i.test(s || "");
+
+// "C:\Filmes\x.mp4" -> "file:///C:/Filmes/x.mp4"
+function toFileUrl(p) {
+  p = p.trim().replace(/^"|"$/g, "").replace(/\\/g, "/");
+  if (!p) return "";
+  if (p.startsWith("file:")) return p;
+  return "file:///" + encodeURI(p.replace(/^\/+/, "")).replace(/#/g, "%23").replace(/\?/g, "%3F");
+}
+
+function arte(f, i) {
+  if (capaSegura(f.poster)) return `<img src="${esc(f.poster)}" alt="Cartaz de ${esc(f.titulo)}" loading="lazy">`;
+  const [c, d] = PALETAS[i % PALETAS.length];
+  return `<div class="art" style="background:radial-gradient(circle at 50% 30%, ${c}55, ${d} 70%), ${d}; color:${c}">
+      <div class="emoji">${esc(f.emoji || "🎃")}</div>
+      <div><div class="t">${esc(f.titulo)}</div><div class="y">${esc(f.ano || "")}</div></div>
+    </div>`;
+}
+
+// conteúdo repetido 8x (número par) para o -50% emendar sem salto
+function fita(el, frases) {
+  const um = frases.map((f) => `<span>${esc(f)} ✦</span>`).join("");
+  el.innerHTML = um.repeat(8);
+}
+
+/* ---------- capa: lê o arquivo, reduz e devolve data URL ---------- */
+async function lerCapa(file) {
+  if (!file || !/^image\//.test(file.type)) throw new Error("Escolha um arquivo de imagem 🖼️");
+  if (file.size > 20 * 1024 * 1024) throw new Error("Imagem grande demais (máx. 20 MB)");
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((ok, erro) => {
+      const im = new Image();
+      im.onload = () => ok(im);
+      im.onerror = () => erro(new Error("Não consegui abrir essa imagem 💀"));
+      im.src = url;
+    });
+    const k = Math.min(1, CAPA_MAX_W / img.naturalWidth, CAPA_MAX_H / img.naturalHeight);
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(img.naturalWidth * k);
+    cv.height = Math.round(img.naturalHeight * k);
+    cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+    return cv.toDataURL("image/jpeg", CAPA_QUALIDADE);
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
+function mostrarPreview() {
+  const p = $("#preview");
+  if (capaForm) {
+    p.innerHTML = "";
+    const img = document.createElement("img");
+    img.src = capaForm;
+    img.alt = "Prévia da capa";
+    p.appendChild(img);
+  } else {
+    p.textContent = "🖼️";
+  }
+  $("#capaRemover").hidden = !capaForm;
+}
+
+async function usarArquivoNoForm(file) {
+  try { capaForm = await lerCapa(file); mostrarPreview(); }
+  catch (e) { toast(e.message); }
+}
+
+/* ---------- tela Em cartaz ---------- */
+function renderCartaz() {
+  const escolhidos = filmes.map((f, i) => ({ f, i })).filter(({ f }) => f.escolhido);
+  $("#countChosen").textContent = escolhidos.length;
+
+  const generos = ["Todos", ...new Set(escolhidos.map(({ f }) => f.genero).filter(Boolean))];
+  if (!generos.includes(filtro)) filtro = "Todos";
+  $("#filters").innerHTML = generos.length > 2
+    ? generos.map((g) => `<button class="chip ${g === filtro ? "on" : ""}" data-g="${esc(g)}">${esc(g)}</button>`).join("")
+    : "";
+
+  const lista = escolhidos.filter(({ f }) => filtro === "Todos" || f.genero === filtro);
+  $("#btnSortear").style.display = lista.length > 1 ? "" : "none";
+  $("#grid").innerHTML = lista.length ? lista.map(({ f, i }) => `
+    <div class="poster" tabindex="0" data-i="${i}" role="button" aria-label="${esc(f.titulo)}">
+      ${arte(f, i)}
+      <span class="badge">${esc(f.genero || "")}</span>
+      ${f.arquivo || f.pasta ? `<span class="badge local">no PC</span>` : ""}
+      ${capaSegura(f.poster) ? `<div class="label">${esc(f.titulo)}</div>` : ""}
+    </div>`).join("") + `
+    <a class="poster add" href="#adicionar"><span class="mais">➕</span>Adicionar mais</a>`
+    : `<div class="empty"><span class="big">🕸️</span>Nenhum filme em cartaz ainda…<br><br>
+        <a class="btn" href="#adicionar">➕ Adicionar filmes</a></div>`;
+}
+
+/* ---------- tela Adicionar ---------- */
+function renderLista() {
+  $("#items").innerHTML = filmes.length ? filmes.map((f, i) => `
+    <div class="item ${f.escolhido ? "chosen" : ""}">
+      <div class="mini">${arte(f, i)}</div>
+      <div>
+        <div class="name">${esc(f.titulo)}</div>
+        <div class="sub2">${[f.ano, f.genero, f.streaming, (f.arquivo || f.pasta) && "💻 no PC"].filter(Boolean).map(esc).join(" · ")}</div>
+      </div>
+      <div class="btns">
+        <button class="pick ${f.escolhido ? "on" : ""}" data-pick="${i}">${f.escolhido ? "✓ Em cartaz" : "🎃 Escolher"}</button>
+        <button class="icon" data-capa="${i}" title="Trocar capa">📷</button>
+        <button class="icon" data-edit="${i}" title="Editar">✏️</button>
+        <button class="icon" data-del="${i}" title="Remover">🗑️</button>
+      </div>
+    </div>`).join("")
+    : `<div class="empty">Lista vazia 👻 Adicione um filme no formulário.</div>`;
+}
+
+function render() { renderCartaz(); renderLista(); }
+
+function editar(i) {
+  editIndex = i;
+  const f = filmes[i] || {};
+  const form = $("#form");
+  form.reset();
+  for (const el of form.elements) {
+    if (!el.name) continue;
+    if (el.type === "checkbox") el.checked = i >= 0 ? !!f.escolhido : true;
+    else el.value = f[el.name] ?? (el.tagName === "SELECT" ? "Terror" : "");
+  }
+  capaForm = capaSegura(f.poster) ? f.poster : "";
+  mostrarPreview();
+  $("#formTitle").textContent = i >= 0 ? "Editar filme" : "Novo filme";
+  $("#btnCancel").hidden = i < 0;
+  if (i >= 0) { form.scrollIntoView({ behavior: "smooth", block: "start" }); form.titulo.focus(); }
+}
+
+/* ---------- detalhes ---------- */
+function abrir(i) {
+  const f = filmes[i];
+  $("#mPoster").innerHTML = arte(f, i);
+  $("#mTitle").textContent = f.titulo;
+  $("#mMeta").textContent = [f.ano, f.genero].filter(Boolean).join(" · ");
+  $("#mSyn").textContent = f.sinopse || "";
+
+  const busca = encodeURIComponent(f.titulo + (f.ano ? " " + f.ano : ""));
+  const justwatch = `https://www.justwatch.com/br/busca?q=${encodeURIComponent(f.titulo)}`;
+  $("#mWhere").innerHTML = f.streaming
+    ? `📺 Disponível em: <b>${esc(f.streaming)}</b>`
+    : (f.arquivo || f.pasta)
+      ? `💻 Este filme está salvo no seu computador.`
+      : `🔎 Não sabe onde assistir? O botão abaixo mostra os streamings no Brasil.`;
+
+  const a = [];
+  if (f.arquivo) {
+    a.push(`<a class="btn green" href="${esc(toFileUrl(f.arquivo))}" target="_blank">▶ Abrir filme</a>`);
+    a.push(`<button class="btn ghost" data-copy="${esc(f.arquivo)}">📋 Copiar caminho</button>`);
+  }
+  if (f.pasta) a.push(`<a class="btn" href="${esc(toFileUrl(f.pasta))}" target="_blank">📁 Abrir pasta</a>`);
+  if (linkSeguro(f.link)) a.push(`<a class="btn purple" href="${esc(f.link)}" target="_blank" rel="noopener">📺 Assistir em ${esc(f.streaming || "streaming")}</a>`);
+  a.push(`<a class="btn ${linkSeguro(f.link) ? "ghost" : "purple"}" href="${justwatch}" target="_blank" rel="noopener">🔎 Onde assistir</a>`);
+  a.push(`<a class="btn ghost" href="https://www.youtube.com/results?search_query=${busca}+trailer" target="_blank" rel="noopener">🎞️ Trailer</a>`);
+  $("#mActions").innerHTML = a.join("");
+  $("#dlg").showModal();
+}
+
+function toast(msg) {
+  const t = $("#toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+/* ---------- troca de tela (abre sempre no cartaz) ---------- */
+function mostrarTela() {
+  const id = location.hash === "#adicionar" ? "adicionar" : "cartaz";
+  document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("on", s.id === id));
+  document.querySelectorAll("nav a").forEach((a) => a.classList.toggle("on", a.dataset.screen === id));
+  window.scrollTo({ top: 0 });
+}
+window.addEventListener("hashchange", mostrarTela);
+
+/* ---------- eventos ---------- */
+$("#grid").addEventListener("click", (e) => {
+  const p = e.target.closest(".poster[data-i]");
+  if (p) abrir(+p.dataset.i);
+});
+$("#grid").addEventListener("keydown", (e) => {
+  const p = e.target.closest(".poster[data-i]");
+  if (p && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); abrir(+p.dataset.i); }
+});
+$("#filters").addEventListener("click", (e) => {
+  const c = e.target.closest(".chip");
+  if (c) { filtro = c.dataset.g; renderCartaz(); }
+});
+document.querySelectorAll("[data-close]").forEach((b) => b.addEventListener("click", () => b.closest("dialog").close()));
+$("#dlg").addEventListener("click", (e) => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+
+$("#mActions").addEventListener("click", async (e) => {
+  const copy = e.target.closest("[data-copy]");
+  if (copy) {
+    try { await navigator.clipboard.writeText(copy.dataset.copy); toast("Caminho copiado! Cole no Explorador ou no VLC 🎃"); }
+    catch { prompt("Copie o caminho:", copy.dataset.copy); }
+  }
+  if (e.target.closest('a[href^="file:"]')) toast("Se não abrir, use “Copiar caminho” e cole no Explorador (Win+E)");
+});
+
+$("#items").addEventListener("click", (e) => {
+  const pick = e.target.closest("[data-pick]");
+  if (pick) {
+    const f = filmes[+pick.dataset.pick];
+    f.escolhido = !f.escolhido;
+    save(); render();
+    toast(f.escolhido ? `“${f.titulo}” entrou em cartaz 🎃` : `“${f.titulo}” saiu de cartaz`);
+  }
+  const capa = e.target.closest("[data-capa]");
+  if (capa) { capaRapidaIndex = +capa.dataset.capa; $("#capaRapida").click(); }
+  const ed = e.target.closest("[data-edit]");
+  if (ed) editar(+ed.dataset.edit);
+  const del = e.target.closest("[data-del]");
+  if (del) {
+    // confirmação na própria página: o 1º clique arma, o 2º remove
+    if (!del.classList.contains("armado")) {
+      document.querySelectorAll("[data-del].armado").forEach((b) => { b.classList.remove("armado"); b.textContent = "🗑️"; });
+      del.classList.add("armado");
+      del.textContent = "Remover?";
+      return;
+    }
+    const i = +del.dataset.del;
+    filmes.splice(i, 1);
+    if (editIndex === i) editar(-1);
+    else if (editIndex > i) editIndex--;
+    save(); render();
+  }
+});
+
+// 📷 da lista: troca a capa sem abrir o formulário
+$("#capaRapida").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  e.target.value = "";
+  const f = filmes[capaRapidaIndex];
+  if (!file || !f) return;
+  try {
+    const antiga = f.poster;
+    f.poster = await lerCapa(file);
+    if (!save()) { f.poster = antiga; return; }
+    if (editIndex === capaRapidaIndex) { capaForm = f.poster; mostrarPreview(); }
+    render();
+    toast(`Capa de “${f.titulo}” atualizada 🦇`);
+  } catch (err) { toast(err.message); }
+});
+
+// capa no formulário: botão, clique no quadro ou arrastar
+$("#capaFile").addEventListener("change", (e) => { usarArquivoNoForm(e.target.files[0]); e.target.value = ""; });
+$("#preview").addEventListener("click", () => $("#capaFile").click());
+$("#capaRemover").addEventListener("click", () => { capaForm = ""; mostrarPreview(); });
+["dragenter", "dragover"].forEach((ev) => $("#preview").addEventListener(ev, (e) => { e.preventDefault(); e.currentTarget.classList.add("drag"); }));
+["dragleave", "drop"].forEach((ev) => $("#preview").addEventListener(ev, (e) => { e.preventDefault(); e.currentTarget.classList.remove("drag"); }));
+$("#preview").addEventListener("drop", (e) => usarArquivoNoForm(e.dataTransfer.files[0]));
+
+$("#form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  data.titulo = data.titulo.trim();
+  if (!data.titulo) return;
+  data.escolhido = e.target.escolhido.checked;
+  if (capaForm) data.poster = capaForm;
+  const novo = editIndex < 0;
+  const antes = structuredClone(filmes);
+  if (novo) filmes.push(data); else filmes[editIndex] = data;
+  if (!save()) { filmes = antes; return; }
+  render();
+  toast(novo ? (data.escolhido ? "Filme adicionado e em cartaz 🎃" : "Filme adicionado à lista 🦇") : "Filme atualizado 🦇");
+  editar(-1);
+});
+$("#btnCancel").addEventListener("click", () => editar(-1));
+
+$("#btnExport").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(filmes, null, 2)], { type: "application/json" });
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "filmes-halloween.json" });
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+});
+$("#fileImport").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!Array.isArray(data) || !data.every((f) => f && typeof f.titulo === "string")) throw 0;
+    const antes = filmes;
+    filmes = data;
+    if (!save()) { filmes = antes; return; }
+    render(); toast("Lista importada 👻");
+  } catch { toast("Arquivo inválido 💀"); }
+  e.target.value = "";
+});
+
+// sortear com suspense
+$("#btnSortear").addEventListener("click", () => {
+  const cards = [...document.querySelectorAll(".poster[data-i]")];
+  if (!cards.length) return;
+  let n = 0;
+  const total = 14 + Math.floor(Math.random() * cards.length);
+  const tick = () => {
+    cards.forEach((c) => c.classList.remove("spin"));
+    const c = cards[n % cards.length];
+    c.classList.add("spin");
+    c.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    if (++n < total) setTimeout(tick, 60 + n * 12);
+    else setTimeout(() => { c.classList.remove("spin"); abrir(+c.dataset.i); }, 500);
+  };
+  tick();
+});
+
+/* ---------- céu: morcegos, bruxas e fantasmas ---------- */
+function voador(html, { top, dur, volta }) {
+  const v = document.createElement("div");
+  v.className = "voador" + (volta ? " volta" : "");
+  v.style.top = top + "vh";
+  v.style.animationDuration = dur + "s";
+  v.style.animationDelay = -Math.random() * dur + "s";
+  v.innerHTML = html; // conteúdo fixo do próprio código, sem dado de usuário
+  v.firstElementChild.style.animationDelay = -Math.random() * 3 + "s";
+  $("#ceu").appendChild(v);
+}
+for (let i = 0; i < 7; i++) {
+  voador(`<span class="bat">🦇</span>`, { top: 5 + Math.random() * 80, dur: 18 + Math.random() * 22, volta: i % 3 === 0 });
+}
+for (let i = 0; i < 3; i++) {
+  voador(`<svg class="bruxa" viewBox="0 0 120 80"><use href="#bruxa"/></svg>`,
+    { top: 10 + i * 25 + Math.random() * 10, dur: 26 + Math.random() * 18, volta: i === 1 });
+}
+for (let i = 0; i < 4; i++) {
+  const g = document.createElement("span");
+  g.className = "fantasma";
+  g.textContent = "👻";
+  g.style.left = 8 + i * 24 + Math.random() * 10 + "vw";
+  const dur = 22 + Math.random() * 14;
+  g.style.animationDuration = dur + "s";
+  g.style.animationDelay = -Math.random() * dur + "s";
+  $("#ceu").appendChild(g);
+}
+
+fita($("#trackA"), FRASES_A);
+fita($("#trackB"), FRASES_B);
+render();
+mostrarTela();
+</script>
+</body>
+</html>
