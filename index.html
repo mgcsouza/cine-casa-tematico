@@ -168,6 +168,13 @@
   .som-ambiente .ligado, .som-ambiente.on .mudo { display: none; }
   .som-ambiente.on .ligado { display: block; }
 
+  /* dica curta apontando para a engrenagem */
+  .dica-engrenagem {
+    align-self: center; margin-left: -4px; text-decoration: none; white-space: nowrap;
+    font: 400 20px/1 "Bebas Neue", sans-serif; letter-spacing: 1px; color: var(--orange2);
+    animation: cutucar 1.6s ease-in-out infinite;
+  }
+  @keyframes cutucar { 50% { translate: -5px 0; } }
   .titulo-tela { font: 400 30px/1 "Bebas Neue", sans-serif; letter-spacing: 1.5px; color: var(--orange); margin: 0; }
 
   .screen { display: none; position: relative; z-index: 1; }
@@ -784,6 +791,7 @@
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68 1.65 1.65 0 0 0 10 3.17V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
       </svg>
     </a>
+    <a class="dica-engrenagem" href="#adicionar" aria-hidden="true" tabindex="-1">← + filmes</a>
   </div>
   <div class="grid" id="grid"></div>
 </section>
